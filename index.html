@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#11100e">
+<title>MyShop | Fashion & Beauty</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f8f4eb;color:#211e19;font-family:Arial,sans-serif}
+header{background:#11100e;color:#f8f4eb;padding:18px;display:flex;justify-content:space-between;align-items:center}
+.logo{font: bold 29px Georgia,serif;color:#e5d1a5}
+button{cursor:pointer;padding:11px 15px;border:1px solid #c9a96a;background:#c9a96a;color:#17130d;border-radius:3px}
+header button{background:transparent;color:#f8f4eb}
+.hero{padding:42px 20px;background:#171512;color:#f8f4eb;text-align:center}
+.hero h1{font:normal 48px Georgia,serif;margin:12px 0}
+.hero em{color:#e5d1a5}
+.hero p{line-height:1.7;color:#ddd3c1}
+main{max-width:1100px;margin:auto;padding:25px 15px}
+h2{font:normal 30px Georgia,serif}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.filters button{background:transparent}
+.filters button.active{background:#171512;color:#e5d1a5}
+input,select,textarea{width:100%;padding:11px;border:1px solid #d7cbb8;background:#fffdf8;margin:5px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.product{background:#fffdf8;border:1px solid #e5ddcf;padding:10px;min-width:0}
+.product img{width:100%;height:165px;object-fit:cover;background:#eee7d9}
+.product h3{font:normal 18px Georgia,serif;margin:9px 0}
+.product p{font-size:12px;color:#777166;line-height:1.5}
+.price{color:#92713a;font-weight:bold;font-size:18px;margin:12px 0}
+.product button{width:100%}
+.panel{margin:30px 0;padding:20px;background:#eee7d9}
+.cartline{padding:12px 0;border-bottom:1px solid #d7cbb8;line-height:1.7}
+.total{font-weight:bold;font-size:20px;padding:18px 0}
+.whatsapp{width:100%;background:#176b40;color:white;border:0;padding:15px}
+footer{background:#11100e;color:#e5d1a5;text-align:center;padding:28px;line-height:2}
+small{color:#777166;line-height:1.6}
+@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.product img{height:220px}.hero h1{font-size:65px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">MyShop.</div>
+  <button onclick="document.getElementById('bag').scrollIntoView({behavior:'smooth'})">My Bag (<span id="count">0</span>)</button>
+</header>
+
+<section class="hero">
+  <p style="color:#c9a96a;letter-spacing:3px">THE MYSHOP COLLECTION</p>
+  <h1>Everyday finds.<br><em>Elevated.</em></h1>
+  <p>Fashion, skincare, makeup and lovely everyday essentials.</p>
+  <button onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Explore Collection</button>
+</section>
+
+<main>
+<section id="shop">
+  <h2>Discover MyShop</h2>
+  <p>Little luxuries for your everyday life.</p>
+  <input id="search" placeholder="Search products..." oninput="render()">
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="products"></div>
+  <p><small>Sample products and prices. Confirm availability and details before ordering.</small></p>
+</section>
+
+<section class="panel" id="bag">
+  <h2>Your Shopping Bag</h2>
+  <div id="cart"></div>
+  <div class="total">Subtotal: <span id="total">RM 0.00</span></div>
+  <p><small>Delivery fee will be confirmed through WhatsApp.</small></p>
+  <button onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Continue Shopping</button>
+  <h2>Checkout</h2>
+  <form id="order">
+    <label>Full name</label>
+    <input name="name" required placeholder="Your name">
+    <label>Phone number</label>
+    <input name="phone" type="tel" required placeholder="Your phone number">
+    <label>Delivery address</label>
+    <textarea name="address" required placeholder="Your full delivery address"></textarea>
+    <label>Payment preference</label>
+    <select name="payment">
+      <option>Bank transfer / DuitNow</option>
+      <option>Discuss payment through WhatsApp</option>
+      <option>Cash on delivery (if available)</option>
+    </select>
+    <label>Order notes (optional)</label>
+    <textarea name="notes" placeholder="Any special requests"></textarea>
+    <button class="whatsapp" type="submit">Place Order via WhatsApp</button>
+  </form>
+</section>
+</main>
+
+<footer>
+  <div class="logo">MyShop.</div>
+  Fashion · Skincare · Makeup · Everyday Essentials<br>
+  © <span id="year"></span> MyShop
+</footer>
+
+<script>
+// IMPORTANT: Replace this example with YOUR WhatsApp number.
+// Malaysian example: 60123456789 (country code + number, digits only)
+const STORE_WHATSAPP = "60123456789";
+
+const items = [
+{id:1,n:"Classic Everyday Tee",c:"Fashion",p:25,o:["S","M","L","XL"],d:"An easy-to-style wardrobe essential.",i:"photo-1521572163474-6864f9cf17ab"},
+{id:2,n:"Elegant Everyday Dress",c:"Fashion",p:49,o:["S","M","L","XL"],d:"An effortless outfit for everyday outings.",i:"photo-1515372039744-b8f02a3ae446"},
+{id:3,n:"Chic Shoulder Bag",c:"Fashion",p:39,o:["Black","Cream","Brown"],d:"A versatile finishing touch.",i:"photo-1584917865442-de89df76afd3"},
+{id:4,n:"Gentle Facial Cleanser",c:"Skincare",p:25,o:["100 ml"],d:"A daily skincare essential.",i:"photo-1556229010-6c3f2c9ca5f8"},
+{id:5,n:"Daily Moisturizer",c:"Skincare",p:32,o:["50 ml"],d:"A moisturizing step for your routine.",i:"photo-1608248543803-ba4f8c70ae0b"},
+{id:6,n:"Hydrating Face Serum",c:"Skincare",p:35,o:["30 ml"],d:"An addition to your skincare routine.",i:"photo-1620916566398-39f1143ab7be"},
+{id:7,n:"Everyday Lip Colour",c:"Makeup",p:19,o:["Rose","Nude","Berry"],d:"Choose your favourite lip shade.",i:"photo-1586495777744-4413f21062fa"},
+{id:8,n:"Soft Glow Blush",c:"Makeup",p:22,o:["Peach","Pink","Rose"],d:"A touch of colour for your look.",i:"photo-1512496015851-a90fb38ba796"},
+{id:9,n:"Makeup Brush",c:"Makeup",p:15,o:["Single brush"],d:"A handy beauty tool.",i:"photo-1522335789203-aabd1fc54bc9"},
+{id:10,n:"Beauty Pouch",c:"Everyday Essentials",p:18,o:["Black","Cream","Pink"],d:"Keep your beauty essentials together.",i:"photo-1590874103328-eac38a683ce7"},
+{id:11,n:"Reusable Water Bottle",c:"Everyday Essentials",p:16,o:["Cream","Black","Sage"],d:"A useful companion for busy days.",i:"photo-1602143407151-7111542de6e8"},
+{id:12,n:"Hair Claw Clip Set",c:"Everyday Essentials",p:12,o:["Neutral","Pastel"],d:"Simple everyday hair accessories.",i:"photo-1522337360788-8b13dee7a37e"}
+];
+
+let category="All", cart=[];
+try{cart=JSON.parse(localStorage.getItem("myshop-cart")||"[]");if(!Array.isArray(cart))cart=[];cart=cart.filter(x=>items.some(p=>p.id===x.id)&&Number.isInteger(x.q)&&x.q>0&&items.find(p=>p.id===x.id).o.includes(x.o))}catch(e){cart=[]}
+
+function rm(n){return "RM "+n.toFixed(2)}
+function esc(s){return String(s).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]))}
+function save(){try{localStorage.setItem("myshop-cart",JSON.stringify(cart))}catch(e){}document.getElementById("count").textContent=cart.reduce((a,x)=>a+x.q,0)}
+function filters(){let cs=["All",...new Set(items.map(x=>x.c))];document.getElementById("filters").innerHTML=cs.map(c=>`<button class="${c===category?'active':''}" onclick="category='${esc(c)}';filters();render()">${esc(c)}</button>`).join("")}
+function render(){
+ let term=document.getElementById("search").value.toLowerCase();
+ let list=items.filter(x=>(category==="All"||x.c===category)&&(x.n+" "+x.c+" "+x.d).toLowerCase().includes(term));
+ document.getElementById("products").innerHTML=list.length?list.map(x=>`<article class="product">
+ <img loading="lazy" src="https://images.unsplash.com/${x.i}?auto=format&fit=crop&w=500&q=75" alt="${esc(x.n)}" onerror="this.style.visibility='hidden'">
+ <h3>${esc(x.n)}</h3><p>${esc(x.c)} · ${esc(x.d)}</p><div class="price">${rm(x.p)}</div>
+ <label>Choose size / colour</label><select id="opt${x.id}">${x.o.map(o=>`<option>${esc(o)}</option>`).join("")}</select>
+ <button onclick="add(${x.id})">Add to Bag</button></article>`).join(""):'<p>No products found.</p>';
+}
+function add(id){
+ let x=items.find(p=>p.id===id),o=document.getElementById("opt"+id).value;
+ let found=cart.find(y=>y.id===id&&y.o===o);
+ if(found)found.q++;else cart.push({id:id,o:o,q:1});
+ save();showCart();alert(x.n+" added to your bag!");
+}
+function showCart(){
+ document.getElementById("cart").innerHTML=cart.length?cart.map(x=>{let p=items.find(y=>y.id===x.id);return `<div class="cartline"><strong>${esc(p.n)}</strong><br>${esc(x.o)} · ${rm(p.p)} each<br>
+ <button onclick="qty(${x.id},'${esc(x.o)}',-1)">−</button> ${x.q} <button onclick="qty(${x.id},'${esc(x.o)}',1)">+</button>
+ <button onclick="removeItem(${x.id},'${esc(x.o)}')">Remove</button><br><strong>${rm(p.p*x.q)}</strong></div>`}).join(""):'Your bag is empty. Browse our collection above.';
+ document.getElementById("total").textContent=rm(cart.reduce((s,x)=>s+items.find(p=>p.id===x.id).p*x.q,0));
+}
+function qty(id,o,d){let x=cart.find(y=>y.id===id&&y.o===o);if(x)x.q+=d;cart=cart.filter(y=>y.q>0);save();showCart()}
+function removeItem(id,o){cart=cart.filter(x=>!(x.id===id&&x.o===o));save();showCart()}
+document.getElementById("order").addEventListener("submit",function(e){
+ e.preventDefault();
+ if(!cart.length){alert("Please add a product to your bag first.");return}
+ if(!/^\d{8,15}$/.test(STORE_WHATSAPP)||STORE_WHATSAPP==="60123456789"){alert("Shop owner: replace STORE_WHATSAPP in the code with your own WhatsApp number first.");return}
+ let f=new FormData(e.target);
+ let lines=cart.map(x=>{let p=items.find(y=>y.id===x.id);return `${p.n} / ${x.o} / Qty ${x.q} / ${rm(p.p*x.q)}`});
+ let msg=["Hello MyShop! I would like to order:","",...lines,"","Subtotal: "+rm(cart.reduce((s,x)=>s+items.find(p=>p.id===x.id).p*x.q,0)),"Delivery: Please confirm","","Name: "+f.get("name"),"Phone: "+f.get("phone"),"Address: "+f.get("address"),"Payment: "+f.get("payment"),"Notes: "+(f.get("notes")||"None"),"","Please confirm stock, delivery fees and payment instructions. Thank you!"].join("\n");
+ window.location.href="https://wa.me/"+STORE_WHATSAPP+"?text="+encodeURIComponent(msg);
+});
+document.getElementById("year").textContent=new Date().getFullYear();
+filters();render();save();showCart();
+</script>
+</body>
+</html>
